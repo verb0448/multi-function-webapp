@@ -11,3 +11,4 @@ langdetect==1.0.9
 yt-dlp==2026.8.19
 PyMuPDF==1.28.2
 streamlit-image-coordinates==0.4.1
+datakart==1.24

@@ -9,6 +9,7 @@ pages = [
     st.Page("pages/주가비교분석기.py", title="주가비교분석", icon="📈"),
     st.Page("pages/대량양식생성기.py", title="대량양식생성기", icon="📄"),
     st.Page("pages/음원툴박스.py", title="음원툴박스", icon="🎧"),
+    st.Page("pages/아파트실거래가조회.py", title="아파트실거래가조회", icon="🏢"),
 ]
 
 with st.sidebar:
