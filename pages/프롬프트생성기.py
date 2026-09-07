@@ -1,6 +1,7 @@
 import datetime
 import io
 import json
+import os
 
 import pandas as pd
 import requests
@@ -11,6 +12,16 @@ MODEL_OPTIONS = {
     "Gemini 2.5 Flash (빠르고 저렴)": "gemini-2.5-flash",
     "Gemini 2.5 Pro (고품질)": "gemini-2.5-pro",
 }
+
+
+def get_secret(name: str) -> str | None:
+    try:
+        val = st.secrets.get(name)
+        if val:
+            return val
+    except Exception:
+        pass
+    return os.environ.get(name)
 
 
 @st.cache_data(show_spinner=False)
@@ -134,13 +145,41 @@ with st.sidebar:
     st.markdown("### ✨ 프롬프트 생성기")
     st.caption("이 사이드바 영역은 현재 열려 있는 도구(프롬프트 생성기) 전용 설정입니다.")
     st.subheader("🔑 Gemini API 설정")
-    api_key = st.text_input(
-        "Gemini API Key",
-        type="password",
-        value=st.session_state.get("gemini_api_key", ""),
-        help="Google AI Studio에서 발급받은 본인의 API 키를 입력하세요. 입력한 키는 서버에 저장되지 않고 이 세션에서만 사용됩니다.",
-    )
-    st.session_state.gemini_api_key = api_key
+
+    tab_own_key, tab_password = st.tabs(["내 API 키 사용", "비밀번호로 접속"])
+
+    api_key = ""
+
+    with tab_own_key:
+        own_key = st.text_input(
+            "Gemini API Key",
+            type="password",
+            value=st.session_state.get("gemini_api_key", ""),
+            help="Google AI Studio에서 발급받은 본인의 API 키를 입력하세요. 입력한 키는 서버에 저장되지 않고 이 세션에서만 사용됩니다.",
+        )
+        st.session_state.gemini_api_key = own_key
+        if own_key:
+            api_key = own_key
+
+    with tab_password:
+        preset_password = get_secret("APP_PASSWORD")
+        entered_password = st.text_input(
+            "비밀번호",
+            type="password",
+            help="사전에 공유받은 비밀번호를 입력하면 등록된 Gemini API 키를 사용할 수 있습니다.",
+        )
+        if entered_password:
+            if not preset_password:
+                st.error("⚠️ 비밀번호 접속 기능이 아직 설정되지 않았습니다.")
+            elif entered_password != preset_password:
+                st.error("❌ 비밀번호가 올바르지 않습니다.")
+            else:
+                preset_key = get_secret("GEMINI_API_KEY")
+                if not preset_key:
+                    st.error("⚠️ 등록된 API 키가 설정되지 않았습니다.")
+                else:
+                    api_key = preset_key
+                    st.success("✅ 인증되었습니다. 등록된 API 키를 사용합니다.")
 
     model_label = st.selectbox("모델 선택", options=list(MODEL_OPTIONS.keys()))
     selected_model = MODEL_OPTIONS[model_label]

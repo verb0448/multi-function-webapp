@@ -1,5 +1,6 @@
 import io
 import zipfile
+from pathlib import Path
 
 import pandas as pd
 import pymupdf
@@ -8,8 +9,10 @@ from PIL import Image, ImageDraw
 from streamlit_image_coordinates import streamlit_image_coordinates
 
 ZOOM = 1.4
-# PyMuPDF 내장 한글(CJK) 폰트 - 별도 폰트 파일 없이 동작하므로 배포 환경(Linux 등)에서도 안전
-KOREAN_FONT = "korea-s"
+# 맑은고딕은 마이크로소프트 소유 폰트라 재배포할 수 없어, 느낌이 비슷하고
+# SIL Open Font License로 자유롭게 배포 가능한 Pretendard Bold를 내장한다.
+KOREAN_FONT = "Pretendard-Bold"
+KOREAN_FONT_PATH = str(Path(__file__).resolve().parent.parent / "assets" / "fonts" / "Pretendard-Bold.ttf")
 
 
 def sanitize_filename(name: str) -> str:
@@ -81,9 +84,12 @@ def generate_pdfs(template_bytes: bytes, df: pd.DataFrame, mappings: list, prefi
                         (m["pdf_x"], m["pdf_y"] + fs),
                         text,
                         fontname=KOREAN_FONT,
+                        fontfile=KOREAN_FONT_PATH,
                         fontsize=fs,
                         color=(0, 0, 0),
                     )
+
+                doc.subset_fonts()  # 폰트 전체(2.6MB)가 아닌 실제 사용된 글자만 남겨 PDF 용량을 줄인다
 
                 if fname_col and fname_col in df.columns:
                     fname_val = row[fname_col]

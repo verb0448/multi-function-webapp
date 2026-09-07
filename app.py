@@ -14,7 +14,7 @@ pages = [
 
 with st.sidebar:
     st.markdown("## 🧰 Multi-Function WebApp")
-    st.caption("아래에서 사용할 기능을 선택하세요.")
+    st.caption("위에서 사용할 기능을 선택하세요.")
 
 nav = st.navigation(pages)
 nav.run()
