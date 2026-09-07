@@ -119,6 +119,22 @@ if st.session_state.ecos_data:
     data = st.session_state.ecos_data
     names = list(data.keys())
 
+    # 지표별 최신 현황 (조회 가능한 가장 최근 날짜의 값과 전일 대비 변화량)
+    st.subheader("📌 최근 지표 현황")
+    metric_cols = st.columns(len(names))
+    for col, name in zip(metric_cols, names):
+        df = data[name]
+        latest = df.iloc[-1]
+        latest_date = latest["TIME"].strftime("%Y-%m-%d")
+        delta = None
+        if len(df) >= 2:
+            delta = latest["DATA_VALUE"] - df.iloc[-2]["DATA_VALUE"]
+        col.metric(
+            label=f"{name} ({latest_date})",
+            value=f"{latest['DATA_VALUE']:,.2f}",
+            delta=f"{delta:+,.2f}" if delta is not None else None,
+        )
+
     # 2행 2열 그래프
     st.subheader("📊 지표 추이 (2x2)")
     fig = make_subplots(rows=2, cols=2, subplot_titles=names)
