@@ -10,6 +10,7 @@
 | 🎭 가상데이터생성기 | Faker 기반으로 보험/개인정보 등 가상 데이터를 생성해 Excel로 다운로드 |
 | 🧹 데이터클렌징 | 업로드한 Excel의 행/열 정리·필터링·병합을 단계별로 적용 후 다운로드 |
 | 📈 주가비교분석 | FinanceDataReader로 여러 종목의 주가를 조회하고 그래프로 비교 |
+| 💱 주가지수 및 환율 | 한국은행 ECOS API로 코스피·코스닥 지수와 원/달러·원/엔 환율의 일별 추이를 2x2 그래프와 지표별 표로 확인, Excel 다운로드 |
 | 📄 대량양식생성기 | PDF 양식에 Excel 데이터를 매핑해 대량으로 개별 PDF 생성 (ZIP 다운로드, 삽입 텍스트는 Pretendard Bold 폰트 내장) |
 | 🎧 음원툴박스 | 유튜브 URL → MP3 추출, 텍스트 → 음성(TTS) 변환 |
 | 🏢 아파트실거래가조회 | 공공데이터포털 API로 기간·지역(서울 25개 구)별 아파트 매매 실거래가를 조회해 표로 확인, Excel 다운로드 (API 키는 `secrets.toml`/Streamlit Cloud Secrets로 관리, 화면 입력 없음) |
@@ -33,6 +34,10 @@ streamlit run app.py
 - 아파트실거래가조회 페이지는 공공데이터포털(data.go.kr) API 키가 필요합니다. 코드에 하드코딩하지 않고 `.streamlit/secrets.toml`(로컬, git 미포함)에서 읽어오며, Streamlit Cloud 배포 시에는 앱의 **Settings → Secrets**에 아래 값을 등록해야 합니다.
   ```toml
   DATA_GO_KR_API_KEY = "발급받은_키"
+  ```
+- 주가지수 및 환율 페이지는 한국은행 ECOS API 키가 필요합니다. 마찬가지로 `.streamlit/secrets.toml`(로컬, git 미포함)에서 읽어오며, Streamlit Cloud 배포 시에는 앱의 **Settings → Secrets**에 아래 값을 등록해야 합니다.
+  ```toml
+  ECOS_API_KEY = "발급받은_키"
   ```
 - 유튜브 MP3 추출 기능은 클라우드 서버의 IP 대역에 따라 유튜브 측에서 접근을 제한할 수 있습니다(로컬 환경보다 실패 가능성이 있음).
 - 대량양식생성기가 삽입하는 텍스트는 `assets/fonts/Pretendard-Bold.ttf`를 사용합니다. 맑은고딕은 마이크로소프트 소유 폰트라 재배포할 수 없어, 느낌이 유사하고 SIL Open Font License로 자유롭게 배포 가능한 Pretendard Bold를 대신 내장했습니다(라이선스 전문: `assets/fonts/LICENSE-Pretendard.txt`).
