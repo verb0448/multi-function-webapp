@@ -7,12 +7,29 @@ import plotly.graph_objects as go
 import streamlit as st
 
 MAX_COMPANIES = 5
+KRX_CACHE_CSV_URL = "https://raw.githubusercontent.com/FinanceData/fdr_krx_data_cache/refs/heads/master/data/listing/krx/{date}.csv"
 
 
 @st.cache_data(ttl=6 * 60 * 60, show_spinner="KRX 상장사 목록을 불러오는 중입니다...")
 def load_krx_listing() -> pd.DataFrame:
-    df = fdr.StockListing("KRX")
-    return df[["Code", "Name", "Market"]].dropna(subset=["Name"])
+    try:
+        df = fdr.StockListing("KRX")
+        return df[["Code", "Name", "Market"]].dropna(subset=["Name"])
+    except Exception:
+        pass
+
+    # data.krx.co.kr가 일부 서버 환경(예: Streamlit Cloud)에서 차단되어 위 방식이
+    # 실패할 수 있어, FinanceDataReader가 내부적으로 쓰는 것과 같은 GitHub 캐시 CSV를
+    # 최근 영업일부터 거슬러 올라가며 직접 조회하는 방식으로 우회한다.
+    for days_back in range(10):
+        target_date = datetime.date.today() - datetime.timedelta(days=days_back)
+        try:
+            df = pd.read_csv(KRX_CACHE_CSV_URL.format(date=target_date.isoformat()), dtype={"Code": str})
+            return df[["Code", "Name", "Market"]].dropna(subset=["Name"])
+        except Exception:
+            continue
+
+    raise ValueError("KRX 상장사 목록을 불러올 수 없습니다.")
 
 
 @st.cache_data(show_spinner=False)
@@ -113,7 +130,12 @@ def remove_from_watchlist(idx: int):
 st.title("📈 주가 비교 분석기")
 st.caption("FinanceDataReader로 한국거래소(KRX) 상장사의 주가를 조회하고, 여러 종목을 한 그래프에서 비교합니다.")
 
-krx_df = load_krx_listing()
+try:
+    krx_df = load_krx_listing()
+except Exception:
+    st.error("⚠️ KRX 상장사 목록을 불러오지 못했습니다. 잠시 후 새로고침해 다시 시도해주세요.")
+    st.stop()
+
 name_to_code = dict(zip(krx_df["Name"], krx_df["Code"]))
 all_names = krx_df["Name"].tolist()
 
