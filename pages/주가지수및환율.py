@@ -139,21 +139,22 @@ if st.session_state.ecos_data:
     fig.update_layout(height=700, showlegend=False, template="plotly_white")
     st.plotly_chart(fig, use_container_width=True)
 
-    # 지표별 상세 데이터
+    # 지표별 상세 데이터 (날짜 기준으로 하나의 테이블에 병합)
     st.subheader("📋 지표별 일별 데이터")
-    tabs = st.tabs(names)
-    for tab, name in zip(tabs, names):
-        with tab:
-            df = data[name].rename(columns={"TIME": "날짜", "DATA_VALUE": name})
-            df["날짜"] = df["날짜"].dt.strftime("%Y-%m-%d")
-            st.dataframe(df, use_container_width=True, hide_index=True)
+    merged = None
+    for name in names:
+        df = data[name][["TIME", "DATA_VALUE"]].rename(columns={"TIME": "날짜", "DATA_VALUE": name})
+        merged = df if merged is None else pd.merge(merged, df, on="날짜", how="outer")
+    merged = merged.sort_values("날짜").reset_index(drop=True)
+    merged["날짜"] = merged["날짜"].dt.strftime("%Y-%m-%d")
 
-            st.download_button(
-                label=f"📥 {name} 데이터 Excel 다운로드",
-                data=to_excel_bytes(df),
-                file_name=f"{name}_{start_date}~{date.today()}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                key=f"download_excel_{name}",
-            )
+    st.dataframe(merged, use_container_width=True, hide_index=True)
+
+    st.download_button(
+        label="📥 전체 데이터 Excel 다운로드",
+        data=to_excel_bytes(merged),
+        file_name=f"주가지수및환율_{start_date}~{date.today()}.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
 else:
     st.info("조회 시작일을 입력한 뒤 '지표 조회' 버튼을 클릭하세요.")
