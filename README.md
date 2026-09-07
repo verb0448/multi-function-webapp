@@ -23,7 +23,7 @@ streamlit run app.py
 
 ## 배포 시 참고 사항 (Streamlit Community Cloud)
 
-- `packages.txt`에 `ffmpeg`(유튜브 MP3 추출), `chromium`(주가비교분석 그래프 PNG 다운로드용 kaleido 렌더링)이 등록되어 있어야 합니다. 둘 다 apt 패키지로 자동 설치됩니다.
+- `packages.txt`에 `ffmpeg`(유튜브 MP3 추출), `chromium`(주가비교분석 그래프 PNG 다운로드용 kaleido 렌더링), `fonts-nanum`(그래프 PNG에 한글이 깨지지 않고 표시되도록 하는 한글 폰트)이 등록되어 있어야 합니다. 셋 다 apt 패키지로 자동 설치됩니다. `chromium`만 설치하고 한글 폰트가 없으면, 클라우드의 최소 리눅스 컨테이너에는 한글 폰트가 전혀 없어 PNG 다운로드 시 한글이 모두 깨진 사각형(□)으로 나옵니다.
 - Gemini API 키는 코드에 저장되어 있지 않으며, 기본적으로 각 세션에서 사용자가 직접 입력합니다. 비밀번호로 공용 키를 사용하게 하려면 `.streamlit/secrets.toml`(로컬) 또는 Streamlit Cloud의 **Settings → Secrets**에 아래 두 값을 등록하세요.
   ```toml
   GEMINI_API_KEY = "공용으로_쓸_제미나이_키"

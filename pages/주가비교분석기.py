@@ -88,6 +88,7 @@ def build_comparison_chart(price_data: dict, start_date, end_date) -> go.Figure:
         legend_title="회사",
         hovermode="x unified",
         template="plotly_white",
+        font=dict(family="NanumGothic, Malgun Gothic, sans-serif"),
     )
     return fig
 
