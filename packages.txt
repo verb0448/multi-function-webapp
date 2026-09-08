@@ -1,3 +1,0 @@
-ffmpeg
-chromium
-fonts-nanum
