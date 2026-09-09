@@ -9,6 +9,7 @@
 | ✨ 프롬프트생성기 | Gemini API를 이용해 요구사항을 최적화된 AI 프롬프트로 변환 (사이드바에서 "내 API 키 사용" 또는 "비밀번호로 접속"(사전 등록된 공용 키 사용) 중 선택) |
 | 🎭 가상데이터생성기 | Faker 기반으로 보험/개인정보 등 가상 데이터를 생성해 Excel로 다운로드 |
 | 🧹 데이터클렌징 | 업로드한 Excel의 행/열 정리·필터링·병합을 단계별로 적용 후 다운로드 |
+| 📋 공시정보검색 | 금융감독원 DART API로 회사명을 검색해 최근 공시정보(공시일/보고서명/제출인/공시URL)를 표로 확인, 공시URL은 클릭하면 새 탭에서 열리는 하이퍼링크 |
 | 📈 주가비교분석 | FinanceDataReader로 여러 종목의 주가를 조회하고 그래프로 비교 |
 | 💱 주가지수 및 환율 | 한국은행 ECOS API로 코스피·코스닥 지수와 원/달러·원/엔 환율의 일별 추이를 2x2 그래프와 지표별 표로 확인, Excel 다운로드 |
 | 📄 대량양식생성기 | PDF 양식에 Excel 데이터를 매핑해 대량으로 개별 PDF 생성 (ZIP 다운로드, 삽입 텍스트는 Pretendard Bold 폰트 내장) |
@@ -42,5 +43,9 @@ streamlit run app.py
   ```toml
   ECOS_API_KEY = "발급받은_키"
   ```
-- 유튜브 MP3 추출 기능은 클라우드 서버의 IP 대역에 따라 유튜브 측에서 접근을 제한할 수 있습니다(로컬 환경보다 실패 가능성이 있음).
+- 공시정보검색 페이지는 금융감독원 DART Open API 키가 필요합니다. `.streamlit/secrets.toml`(로컬, git 미포함)에서 읽어오며, Streamlit Cloud 배포 시에는 앱의 **Settings → Secrets**에 아래 값을 등록해야 합니다.
+  ```toml
+  DART_API_KEY = "발급받은_키"
+  ```
+- 유튜브 MP3 추출 기능은 클라우드 서버의 IP 대역에 따라 유튜브 측에서 접근을 제한할 수 있습니다(로컬 환경보다 실패 가능성이 있음). 이를 완화하기 위해 `yt_dlp`가 웹 브라우저 대신 안드로이드/iOS 앱 클라이언트로 위장해 요청하도록 설정했지만(`extractor_args`의 `player_client`), 유튜브가 IP 자체를 차단한 경우에는 이 설정으로도 우회되지 않을 수 있습니다.
 - 대량양식생성기가 삽입하는 텍스트는 `assets/fonts/Pretendard-Bold.ttf`를 사용합니다. 맑은고딕은 마이크로소프트 소유 폰트라 재배포할 수 없어, 느낌이 유사하고 SIL Open Font License로 자유롭게 배포 가능한 Pretendard Bold를 대신 내장했습니다(라이선스 전문: `assets/fonts/LICENSE-Pretendard.txt`).

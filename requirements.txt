@@ -13,3 +13,4 @@ imageio-ffmpeg==0.6.0
 PyMuPDF==1.28.2
 streamlit-image-coordinates==0.4.1
 datakart==1.24
+xmltodict==1.0.4
