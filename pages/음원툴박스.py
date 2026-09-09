@@ -83,6 +83,9 @@ with tab_youtube:
                     ],
                     "outtmpl": out_tmpl,
                     "ffmpeg_location": FFMPEG_PATH,
+                    # 웹 브라우저로 위장한 요청이 유튜브에서 403으로 차단되는 경우가 있어,
+                    # 안드로이드/iOS 앱 클라이언트로 위장해 요청하도록 우회한다.
+                    "extractor_args": {"youtube": {"player_client": ["android", "ios", "web"]}},
                     "quiet": True,
                     "no_warnings": True,
                 }
