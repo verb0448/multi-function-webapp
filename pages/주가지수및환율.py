@@ -161,7 +161,7 @@ if st.session_state.ecos_data:
     for name in names:
         df = data[name][["TIME", "DATA_VALUE"]].rename(columns={"TIME": "날짜", "DATA_VALUE": name})
         merged = df if merged is None else pd.merge(merged, df, on="날짜", how="outer")
-    merged = merged.sort_values("날짜").reset_index(drop=True)
+    merged = merged.sort_values("날짜", ascending=False).reset_index(drop=True)
     merged["날짜"] = merged["날짜"].dt.strftime("%Y-%m-%d")
 
     st.dataframe(merged, use_container_width=True, hide_index=True)
