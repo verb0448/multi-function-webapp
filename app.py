@@ -3,8 +3,11 @@ import streamlit as st
 st.set_page_config(page_title="Multi-Function WebApp", page_icon="🧰", layout="wide")
 
 pages = {
+    "": [
+        st.Page("pages/홈.py", title="홈", icon="🏠", default=True),
+    ],
     "업무 도구 1": [
-        st.Page("pages/프롬프트생성기.py", title="프롬프트생성기", icon="✨", default=True),
+        st.Page("pages/프롬프트생성기.py", title="프롬프트생성기", icon="✨"),
         st.Page("pages/가상데이터생성기.py", title="가상데이터생성기", icon="🎭"),
         st.Page("pages/데이터클렌징.py", title="데이터클렌징", icon="🧹"),
         st.Page("pages/대량양식생성기.py", title="대량양식생성기", icon="📄"),
