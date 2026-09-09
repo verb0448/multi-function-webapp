@@ -1,13 +1,28 @@
 import datetime
 import difflib
+import io
+from pathlib import Path
 
 import FinanceDataReader as fdr
+import matplotlib
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from matplotlib import font_manager
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 MAX_COMPANIES = 5
 KRX_CACHE_CSV_URL = "https://raw.githubusercontent.com/FinanceData/fdr_krx_data_cache/refs/heads/master/data/listing/krx/{date}.csv"
+
+# PNG 다운로드는 kaleido(헤드리스 브라우저 필요) 대신 matplotlib으로 직접 렌더링한다.
+# 시스템 apt 패키지(chromium/fonts-nanum) 없이도 동작하도록, 폰트도 리포에 내장된
+# TTF를 코드로 직접 등록해서 사용한다(대량양식생성기 페이지와 동일한 폰트 재사용).
+_FONT_PATH = str(Path(__file__).resolve().parent.parent / "assets" / "fonts" / "Pretendard-Bold.ttf")
+font_manager.fontManager.addfont(_FONT_PATH)
+plt.rcParams["font.family"] = font_manager.FontProperties(fname=_FONT_PATH).get_name()
+plt.rcParams["axes.unicode_minus"] = False  # 폰트에 유니코드 마이너스 글리프가 없어 하이픈이 깨지는 것을 방지
 
 
 @st.cache_data(ttl=6 * 60 * 60, show_spinner="KRX 상장사 목록을 불러오는 중입니다...")
@@ -108,6 +123,57 @@ def build_comparison_chart(price_data: dict, start_date, end_date) -> go.Figure:
         font=dict(family="NanumGothic, Malgun Gothic, sans-serif"),
     )
     return fig
+
+
+def render_chart_png(price_data: dict, start_date, end_date) -> bytes:
+    """화면의 Plotly 그래프와 동일한 내용을 matplotlib으로 다시 그려 PNG 바이트로 반환한다."""
+    fig, ax = plt.subplots(figsize=(16, 8), dpi=100)
+
+    for i, (name, df) in enumerate(price_data.items()):
+        color = CHART_COLORS[i % len(CHART_COLORS)]
+        ax.plot(df.index, df["Close"], label=name, color=color, linewidth=1.5)
+
+        max_idx = df["Close"].idxmax()
+        min_idx = df["Close"].idxmin()
+        max_price = df.loc[max_idx, "Close"]
+        min_price = df.loc[min_idx, "Close"]
+
+        ax.scatter([max_idx], [max_price], color=color, marker="^", s=80, zorder=5, edgecolors="white")
+        ax.scatter([min_idx], [min_price], color=color, marker="v", s=80, zorder=5, edgecolors="white")
+
+        offset = i * 12
+        ax.annotate(
+            f"{name} 최고\n{max_price:,.0f} ({max_idx.strftime('%Y-%m-%d')})",
+            xy=(max_idx, max_price),
+            xytext=(0, 20 + offset),
+            textcoords="offset points",
+            ha="center",
+            fontsize=8,
+            color=color,
+            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec=color, alpha=0.9),
+        )
+        ax.annotate(
+            f"{name} 최저\n{min_price:,.0f} ({min_idx.strftime('%Y-%m-%d')})",
+            xy=(min_idx, min_price),
+            xytext=(0, -28 - offset),
+            textcoords="offset points",
+            ha="center",
+            fontsize=8,
+            color=color,
+            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec=color, alpha=0.9),
+        )
+
+    ax.set_title(f"주가 비교 ({start_date} ~ {end_date})")
+    ax.set_xlabel("날짜")
+    ax.set_ylabel("종가 (원)")
+    ax.legend(title="회사")
+    ax.grid(True, alpha=0.3)
+    fig.autofmt_xdate()
+
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format="png", bbox_inches="tight")
+    plt.close(fig)
+    return buffer.getvalue()
 
 
 # ============================================================
@@ -224,9 +290,8 @@ if search_clicked:
                 "start_date": start_date,
                 "end_date": end_date,
             }
-            fig = build_comparison_chart(price_data, start_date, end_date)
             try:
-                st.session_state.stock_chart_png = fig.to_image(format="png", width=1600, height=800, scale=2)
+                st.session_state.stock_chart_png = render_chart_png(price_data, start_date, end_date)
             except Exception:
                 st.session_state.stock_chart_png = None
             st.success(f"✅ {len(price_data)}개 종목 조회 완료 (기준일: {end_date})")

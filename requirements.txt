@@ -5,10 +5,11 @@ openpyxl==3.1.5
 requests==2.34.2
 finance-datareader==0.9.202
 plotly==7.0.0
-kaleido==1.4.0
+matplotlib==3.11.1
 edge-tts==7.2.8
 langdetect==1.0.9
 yt-dlp==2026.8.19
+imageio-ffmpeg==0.6.0
 PyMuPDF==1.28.2
 streamlit-image-coordinates==0.4.1
 datakart==1.24

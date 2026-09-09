@@ -24,16 +24,10 @@ streamlit run app.py
 
 ## 배포 시 참고 사항 (Streamlit Community Cloud)
 
-- ⚠️ **(2026-09-09 임시조치)** `packages.txt`를 현재 비워두었습니다. Streamlit Community Cloud 플랫폼 자체의 apt 저장소 문제(`bullseye-security` 인증서 만료 + `trixie` 소스 혼재)로 `apt-get` 단계가 실패해 앱 전체가 기동조차 되지 않는 상태가 발생했고, 그 우회책으로 apt 패키지 설치를 건너뛴 것입니다. 이로 인해 아래 두 기능만 임시로 동작하지 않습니다(그 외 6개 기능은 정상):
-  - 🎧 음원툴박스 → 유튜브 MP3 추출 (`ffmpeg` 필요)
-  - 📈 주가비교분석 → 그래프 이미지(PNG) 다운로드 (`chromium` + `fonts-nanum` 필요, 그래프 화면 표시 자체는 정상)
-  - **복구 방법**: Streamlit Cloud의 플랫폼 문제가 해결되면 `packages.txt`에 아래 3줄을 다시 채우고 재배포하면 원상 복구됩니다.
-    ```
-    ffmpeg
-    chromium
-    fonts-nanum
-    ```
-- (평상시) `packages.txt`에 `ffmpeg`(유튜브 MP3 추출), `chromium`(주가비교분석 그래프 PNG 다운로드용 kaleido 렌더링), `fonts-nanum`(그래프 PNG에 한글이 깨지지 않고 표시되도록 하는 한글 폰트)이 등록되어 있어야 합니다. 셋 다 apt 패키지로 자동 설치됩니다. `chromium`만 설치하고 한글 폰트가 없으면, 클라우드의 최소 리눅스 컨테이너에는 한글 폰트가 전혀 없어 PNG 다운로드 시 한글이 모두 깨진 사각형(□)으로 나옵니다.
+- **(2026-09-09) `packages.txt`를 사용하지 않습니다.** 이전에는 유튜브 MP3 추출(`ffmpeg`)과 주가비교분석 그래프 PNG 다운로드(`chromium`+`fonts-nanum`)를 위해 apt 패키지를 설치했으나, Streamlit Community Cloud 플랫폼 자체의 apt 저장소 문제(`bullseye-security` 인증서 만료 + `trixie` 소스 혼재)로 apt-get 단계가 통째로 실패해 앱이 아예 기동되지 않는 사태가 발생했습니다. 이를 계기로 두 기능 모두 **apt(시스템 패키지) 없이 순수 pip 라이브러리만으로 동작하도록 교체**했습니다:
+  - 🎧 유튜브 MP3 추출: `yt_dlp`의 `ffmpeg_location`에 `imageio-ffmpeg` 패키지가 pip install 시 함께 내려받는 정적 ffmpeg 바이너리 경로를 지정 (`imageio_ffmpeg.get_ffmpeg_exe()`).
+  - 📈 주가비교분석 PNG 다운로드: 기존 `kaleido`(헤드리스 브라우저 필요) 대신 `matplotlib`으로 동일한 그래프를 직접 렌더링. 한글 폰트도 시스템 설치 폰트가 아니라 리포에 이미 내장된 `assets/fonts/Pretendard-Bold.ttf`를 코드에서 직접 등록해서 사용하므로, 클라우드 컨테이너에 한글 폰트가 없어도 깨지지 않습니다.
+  - 이 방식은 apt 저장소 문제와 완전히 무관해서, Streamlit Cloud의 base 이미지 상태와 상관없이 항상 안정적으로 동작합니다. `packages.txt` 파일 자체가 저장소에 없으므로 앱 시작 시 apt-get 단계가 아예 실행되지 않습니다.
 - Gemini API 키는 코드에 저장되어 있지 않으며, 기본적으로 각 세션에서 사용자가 직접 입력합니다. 비밀번호로 공용 키를 사용하게 하려면 `.streamlit/secrets.toml`(로컬) 또는 Streamlit Cloud의 **Settings → Secrets**에 아래 두 값을 등록하세요.
   ```toml
   GEMINI_API_KEY = "공용으로_쓸_제미나이_키"

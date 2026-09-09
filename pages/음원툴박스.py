@@ -4,9 +4,12 @@ import re
 import tempfile
 
 import edge_tts
+import imageio_ffmpeg
 import streamlit as st
 import yt_dlp
 from langdetect import DetectorFactory, detect
+
+FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 
 DetectorFactory.seed = 0  # 언어 감지 결과 일관성 고정
 
@@ -79,6 +82,7 @@ with tab_youtube:
                         }
                     ],
                     "outtmpl": out_tmpl,
+                    "ffmpeg_location": FFMPEG_PATH,
                     "quiet": True,
                     "no_warnings": True,
                 }
