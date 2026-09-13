@@ -11,6 +11,7 @@ pages = {
         st.Page("pages/가상데이터생성기.py", title="가상데이터생성기", icon="🎭"),
         st.Page("pages/데이터클렌징.py", title="데이터클렌징", icon="🧹"),
         st.Page("pages/대량양식생성기.py", title="대량양식생성기", icon="📄"),
+        st.Page("pages/문서스캔변환기.py", title="문서스캔변환기", icon="📐"),
     ],
     "업무 도구 2": [
         st.Page("pages/공시정보검색.py", title="공시정보검색", icon="📋"),

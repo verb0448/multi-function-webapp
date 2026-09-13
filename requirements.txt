@@ -12,5 +12,7 @@ yt-dlp==2026.8.19
 imageio-ffmpeg==0.6.0
 PyMuPDF==1.28.2
 streamlit-image-coordinates==0.4.1
+opencv-python-headless==5.0.0.93
+Pillow==12.3.0
 datakart==1.24
 xmltodict==1.0.4
