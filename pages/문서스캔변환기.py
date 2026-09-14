@@ -81,7 +81,7 @@ if len(points) == 4:
     with fmt_col:
         output_format = st.selectbox("저장 형식", ["png", "jpg", "pdf"])
     with size_col:
-        size_mode = st.radio("크기", ["자동(추정 크기)", "A4"], horizontal=True) if output_format == "pdf" else "자동(추정 크기)"
+        size_mode = st.radio("크기", ["자동(추정 크기)", "A4"], horizontal=True)
 
     if size_mode == "A4":
         out_width, out_height = 2480, 3508
