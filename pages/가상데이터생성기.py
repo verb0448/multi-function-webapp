@@ -9,6 +9,7 @@ import pandas as pd
 import streamlit as st
 from faker import Faker
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("🎭 가상데이터생성기")
 st.write(
     "AI 모델 학습 등에 실제 개인정보 대신 사용할 수 있는 **가상(Fake) Data**를 "

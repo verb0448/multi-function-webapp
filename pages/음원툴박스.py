@@ -31,6 +31,7 @@ async def synthesize_speech(text: str, voice: str, out_path: str):
     await communicate.save(out_path)
 
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("🎧 음원 툴박스")
 st.caption("유튜브 영상을 MP3로 추출하거나, 텍스트를 음성(TTS)으로 변환합니다.")
 

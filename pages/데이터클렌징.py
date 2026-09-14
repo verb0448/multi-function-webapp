@@ -5,6 +5,7 @@ import io
 import pandas as pd
 import streamlit as st
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("🧹 데이터 클렌징 & 병합")
 st.write(
     "엑셀 데이터에서 불필요한 행/열을 제거하고, 조건에 맞는 행을 필터링하거나 "

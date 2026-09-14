@@ -193,6 +193,7 @@ def remove_from_watchlist(idx: int):
     st.session_state.watchlist.pop(idx)
 
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("📈 주가 비교 분석기")
 st.caption("FinanceDataReader로 한국거래소(KRX) 상장사의 주가를 조회하고, 여러 종목을 한 그래프에서 비교합니다.")
 

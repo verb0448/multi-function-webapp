@@ -6,6 +6,7 @@ import pandas as pd
 import streamlit as st
 from datakart import Datagokr
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("🏢 아파트 실거래가 조회")
 st.caption("공공데이터포털(국토교통부) 아파트 매매 실거래가 API로 기간·지역별 거래 내역을 조회합니다.")
 

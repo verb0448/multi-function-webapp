@@ -132,6 +132,7 @@ if "form_result_zip" not in st.session_state:
     st.session_state.form_result_zip = None
 
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("📄 대량 양식 생성기")
 st.caption("PDF 양식의 원하는 위치에 엑셀 데이터를 자동으로 채워, 행 개수만큼의 개별 PDF를 한 번에 생성합니다. (예: 100명의 연봉계약서)")
 

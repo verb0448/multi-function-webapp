@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="Multi-Function WebApp", page_icon="🧰", layout="wide")
+st.set_page_config(page_title="Multi-Function WebApp", page_icon="🧰", layout="wide", initial_sidebar_state="collapsed")
 
 pages = {
     "": [
@@ -23,10 +23,6 @@ pages = {
         st.Page("pages/아파트실거래가조회.py", title="아파트실거래가조회", icon="🏢"),
     ],
 }
-
-with st.sidebar:
-    st.markdown("## 🧰 Multi-Function WebApp")
-    st.caption("위에서 사용할 기능을 선택하세요.")
 
 nav = st.navigation(pages)
 nav.run()

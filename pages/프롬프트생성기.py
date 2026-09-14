@@ -135,6 +135,7 @@ if "current_record" not in st.session_state:
     st.session_state.current_record = None
 
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("✨ AI 프롬프트 생성기")
 st.caption("요구사항을 자연어로 입력하면 Gemini AI가 최적화된 프롬프트를 자동으로 생성해드립니다.")
 

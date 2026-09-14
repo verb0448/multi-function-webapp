@@ -1,11 +1,10 @@
 import streamlit as st
 
-st.title("🧰 Multi-Function WebApp")
-st.caption("여러 업무·개인 도구를 한곳에 모은 웹앱입니다. 왼쪽 메뉴 또는 아래 카드에서 원하는 기능을 선택하세요.")
-
+# 그룹별 포인트 컬러 - 업무 도구는 차분한 파랑·보라 계열, 개인 관심사는 따뜻한 톤으로 구분한다.
 FEATURE_GROUPS = [
     (
-        "📁 업무 도구 1",
+        "업무 도구 1",
+        "#3b82f6",
         [
             ("pages/프롬프트생성기.py", "✨", "프롬프트생성기", "Gemini API로 요구사항을 최적화된 AI 프롬프트로 변환"),
             ("pages/가상데이터생성기.py", "🎭", "가상데이터생성기", "Faker 기반 가상 데이터 생성, Excel 다운로드"),
@@ -15,7 +14,8 @@ FEATURE_GROUPS = [
         ],
     ),
     (
-        "📁 업무 도구 2",
+        "업무 도구 2",
+        "#8b5cf6",
         [
             ("pages/공시정보검색.py", "📋", "공시정보검색", "DART API로 회사 공시정보 검색"),
             ("pages/주가비교분석기.py", "📈", "주가비교분석", "여러 종목의 주가를 조회하고 비교"),
@@ -23,26 +23,126 @@ FEATURE_GROUPS = [
         ],
     ),
     (
-        "🎧 개인 관심사",
+        "개인 관심사",
+        "#f59e0b",
         [
             (
                 "pages/음원툴박스.py",
                 "🎧",
                 "음원툴박스",
-                "유튜브 MP3 추출, 텍스트 음성 변환\n\n※ 유튜브 정책에 따라 유튜브 음원 추출 불가할 수 있음",
+                "유튜브 MP3 추출, 텍스트 음성 변환<br><br>※ 유튜브 정책에 따라 유튜브 음원 추출 불가할 수 있음",
             ),
             ("pages/아파트실거래가조회.py", "🏢", "아파트실거래가조회", "지역·기간별 아파트 매매 실거래가 조회"),
         ],
     ),
 ]
 
-for group_title, features in FEATURE_GROUPS:
-    st.subheader(group_title)
-    cols = st.columns(len(features))
-    for col, (path, icon, name, desc) in zip(cols, features):
-        with col:
-            with st.container(border=True):
-                st.markdown(f"##### {icon} {name}")
-                st.caption(desc)
-                st.page_link(path, label="바로가기", icon="➡️")
-    st.write("")
+CARD_CSS = """
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+
+.home-hero-title {
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 800;
+    font-size: 2.4rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #6366f1, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 0.3rem;
+}
+.home-hero-underline {
+    width: 64px;
+    height: 5px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #6366f1, #ec4899);
+    margin-bottom: 1.1rem;
+}
+.home-hero-caption {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+.home-group-header {
+    display: flex;
+    align-items: center;
+    border-left: 5px solid var(--accent);
+    padding-left: 12px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1f2333;
+    margin: 2rem 0 0.9rem;
+}
+.home-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+.home-feature-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 168px;
+    padding: 20px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    text-decoration: none !important;
+    color: inherit;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.home-feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.12);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 6%, white);
+}
+.home-feature-card .card-icon {
+    font-size: 1.7rem;
+}
+.home-feature-card .card-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #111827;
+}
+.home-feature-card .card-desc {
+    font-size: 0.85rem;
+    color: #6b7280;
+    line-height: 1.45;
+    white-space: pre-line;
+    flex-grow: 1;
+}
+</style>
+"""
+
+st.markdown(CARD_CSS, unsafe_allow_html=True)
+
+hero_html = """
+<div class="home-hero-title">모듈형 Multi-Function 앱</div>
+<div class="home-hero-underline"></div>
+<div class="home-hero-caption">여러 업무·개인 도구를 한곳에 모은 웹앱입니다. 아래 카드를 클릭해 원하는 기능으로 이동하세요.</div>
+"""
+st.markdown(hero_html, unsafe_allow_html=True)
+
+for group_title, accent, features in FEATURE_GROUPS:
+    cards_html = "".join(
+        '<a class="home-feature-card" href="{href}" style="--accent:{accent}">'
+        '<div class="card-icon">{icon}</div>'
+        '<div class="card-title">{name}</div>'
+        '<div class="card-desc">{desc}</div>'
+        "</a>".format(
+            href=path.replace("pages/", "/").replace(".py", ""),
+            accent=accent,
+            icon=icon,
+            name=name,
+            desc=desc,
+        )
+        for path, icon, name, desc in features
+    )
+    group_html = (
+        f'<div class="home-group-header" style="--accent:{accent}">{group_title}</div>'
+        f'<div class="home-card-grid">{cards_html}</div>'
+    )
+    st.markdown(group_html, unsafe_allow_html=True)

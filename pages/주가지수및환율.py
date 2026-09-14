@@ -8,6 +8,7 @@ import streamlit as st
 from datakart import Ecos
 from plotly.subplots import make_subplots
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("💱 주가지수 및 환율")
 st.caption("한국은행 ECOS(경제통계시스템) API로 코스피·코스닥 지수와 원/달러·원/엔 환율의 일별 추이를 조회합니다.")
 

@@ -8,6 +8,7 @@ import requests
 import streamlit as st
 import xmltodict
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("📋 공시정보검색")
 st.caption("금융감독원 DART(전자공시시스템) API로 회사명을 검색해 최근 공시정보를 조회합니다.")
 

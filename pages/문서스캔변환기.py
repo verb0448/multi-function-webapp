@@ -11,6 +11,7 @@ MAX_DISPLAY_WIDTH = 700
 POINT_LABELS = ["① 좌상단", "② 우상단", "③ 우하단", "④ 좌하단"]
 MARKER_COLOR = (255, 0, 255)
 
+st.page_link("pages/홈.py", label="← 홈")
 st.title("📐 문서스캔변환기")
 st.caption("비스듬하게 찍힌 서류 사진에서 4개의 꼭짓점을 순서대로(좌상단→우상단→우하단→좌하단) 클릭하면 반듯한 사각형 이미지로 보정합니다.")
 
