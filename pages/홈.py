@@ -111,7 +111,6 @@ CARD_CSS = """
     font-size: 0.85rem;
     color: #6b7280;
     line-height: 1.45;
-    white-space: pre-line;
     flex-grow: 1;
 }
 </style>
@@ -126,9 +125,12 @@ hero_html = """
 """
 st.markdown(hero_html, unsafe_allow_html=True)
 
+# 카드는 <a target="_self">로 만든다. target을 명시하지 않으면 Streamlit이
+# 보안을 위해 자동으로 target="_blank"를 붙여 새 탭으로 열리므로, 지금 화면에서
+# 그대로 전환되도록 target을 직접 지정해 그 기본 동작을 덮어썼다.
 for group_title, accent, features in FEATURE_GROUPS:
     cards_html = "".join(
-        '<a class="home-feature-card" href="{href}" style="--accent:{accent}">'
+        '<a class="home-feature-card" href="{href}" target="_self" style="--accent:{accent}">'
         '<div class="card-icon">{icon}</div>'
         '<div class="card-title">{name}</div>'
         '<div class="card-desc">{desc}</div>'
