@@ -86,6 +86,7 @@ if len(points) == 4:
     if size_mode == "A4":
         out_width, out_height = 2480, 3508
     else:
+        st.caption("※ 자동(추정 크기)은 클릭한 네 꼭짓점의 픽셀 거리로 추정한 값이라 실제 용지 비율과 다를 수 있습니다. 정확한 A4 크기가 필요하면 위에서 'A4'를 선택하세요.")
         w_col, h_col = st.columns(2)
         out_width = int(w_col.number_input("가로(px)", min_value=50, value=max(auto_width, 50), step=10))
         out_height = int(h_col.number_input("세로(px)", min_value=50, value=max(auto_height, 50), step=10))
