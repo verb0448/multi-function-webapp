@@ -113,13 +113,42 @@ CARD_CSS = """
     line-height: 1.45;
     flex-grow: 1;
 }
+.home-logo-bar {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1.2rem;
+}
+.brand-logo {
+    background: #0D1E6C;
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    flex-shrink: 0;
+}
+.brand-logo img {
+    display: block;
+    height: 40px;
+    width: auto;
+    max-width: 260px;
+    object-fit: contain;
+}
 </style>
 """
 
 st.markdown(CARD_CSS, unsafe_allow_html=True)
 
+logo_html = """
+<div class="home-logo-bar">
+    <div class="brand-logo"><img src="https://i.postimg.cc/vBjqSL4T/logo.png" alt="로고"></div>
+</div>
+"""
+st.markdown(logo_html, unsafe_allow_html=True)
+
 hero_html = """
-<div class="home-hero-title">모듈형 Multi-Function 앱</div>
+<div class="home-hero-title">모듈형 Multi-Function 웹앱</div>
 <div class="home-hero-underline"></div>
 <div class="home-hero-caption">여러 업무·개인 도구를 한곳에 모은 웹앱입니다. 아래 카드를 클릭해 원하는 기능으로 이동하세요.</div>
 """
