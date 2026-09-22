@@ -1,4 +1,8 @@
+from pathlib import Path
+
 import streamlit as st
+
+LOCAL_GUIDE_PATH = Path(__file__).parent.parent / "assets" / "로컬실행_사용방법.txt"
 
 # 그룹별 포인트 컬러 - 업무 도구는 차분한 파랑·보라 계열, 개인 관심사는 따뜻한 톤으로 구분한다.
 FEATURE_GROUPS = [
@@ -135,6 +139,16 @@ CARD_CSS = """
     max-width: 260px;
     object-fit: contain;
 }
+.home-security-notice {
+    background: color-mix(in srgb, #f59e0b 10%, white);
+    border: 1px solid color-mix(in srgb, #f59e0b 35%, white);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #92600a;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-bottom: 0.6rem;
+}
 </style>
 """
 
@@ -153,6 +167,20 @@ hero_html = """
 <div class="home-hero-caption">여러 업무·개인 도구를 한곳에 모은 웹앱입니다. 아래 카드를 클릭해 원하는 기능으로 이동하세요.</div>
 """
 st.markdown(hero_html, unsafe_allow_html=True)
+
+st.markdown(
+    '<div class="home-security-notice">'
+    "🔒 외부 서버에 내부 정보가 올라갈 수 있는 기능 사용 시 보안이 우려된다면, 로컬 서버에서 사용하세요. (사용방법 다운로드)"
+    "</div>",
+    unsafe_allow_html=True,
+)
+if LOCAL_GUIDE_PATH.exists():
+    st.download_button(
+        label="📥 로컬 실행 사용방법 다운로드",
+        data=LOCAL_GUIDE_PATH.read_bytes(),
+        file_name="로컬실행_사용방법.txt",
+        mime="text/plain",
+    )
 
 # 카드는 <a target="_self">로 만든다. target을 명시하지 않으면 Streamlit이
 # 보안을 위해 자동으로 target="_blank"를 붙여 새 탭으로 열리므로, 지금 화면에서
